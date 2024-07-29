@@ -84,3 +84,6 @@ yarn-error.log*
 # Local development
 tmp/
 temp/
+
+# vs code
+.vscode
