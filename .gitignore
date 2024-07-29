@@ -86,4 +86,7 @@ tmp/
 temp/
 
 # vs code
-.vscode
+.vscode/
+
+# gitignore
+.gitignore
