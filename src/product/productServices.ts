@@ -5,20 +5,9 @@ import productDto from "./dtos/createProductDto";
 import redis from '../index';
 import { connectRabbitMQ, createChannel, publishToExchange } from "../utils/rabbitmq";
 import userModel from "../models/userModel";
-import { sendEmail } from "../utils/mailer";
+import  {sendEmail}  from "../utils/mailer";
 
-// export const createProduct = async (data: productDto) => {
-//     try {
-//         const product = await productModel.findOne({ code: data.code })
-//         if (product) throw new Error("product already exist")
-//         console.log(data)
-//         const newProduct = await productModel.create(data)
-//         newProduct.save()
-//         return newProduct
-//     } catch (err: any) {
-//         return { message: err.message }
-//     }
-// }
+
 export const createProduct = async (data: productDto) => {
     try {
         const product = await productModel.findOne({ code: data.code })
