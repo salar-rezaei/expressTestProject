@@ -1,6 +1,8 @@
-import AuthMiddleware from "./authMiddleware"
-import ValidateMiddleware from "./validateMiddleware"
+import AuthMiddleware from "./authMiddleware";
+import ValidateMiddleware from "./validateMiddleware";
+import ErrorHandlingMiddleware from "./errorHandlingMiddleware";
 export{
     AuthMiddleware,
-    ValidateMiddleware
+    ValidateMiddleware,
+    ErrorHandlingMiddleware
 }

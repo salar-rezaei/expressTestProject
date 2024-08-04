@@ -6,13 +6,12 @@ import redis from '../index';
 import { connectRabbitMQ, createChannel, publishToExchange } from "../utils/rabbitmq";
 import userModel from "../models/userModel";
 import  {sendEmail}  from "../utils/mailer";
+import ServerError from "../errors/serverErrors";
 
 
 export const createProduct = async (data: productDto) => {
-    try {
         const product = await productModel.findOne({ code: data.code })
-        if (product) throw new Error("product already exist")
-        console.log(data)
+        if (product) throw new ServerError(409, "product already exist")
         const newProduct = await productModel.create(data)
         newProduct.save()
 
@@ -35,13 +34,9 @@ export const createProduct = async (data: productDto) => {
         );
 
         return newProduct
-    } catch (err: any) {
-        return { message: err.message }
     }
-}
 
 export const getAllProducts = async () => {
-    try {
         let products = await redis.get('allProducts');
         if (products) {
             return JSON.parse(products);
@@ -50,30 +45,21 @@ export const getAllProducts = async () => {
             await redis.set('allProducts', JSON.stringify(products), 'EX', 3600); // cache for 1 hour
             return products;
         }
-    } catch (err) {
-        console.error(err);
-        throw err;
-    }
-};
+    };
 
 
 export const getOneProduct = async (id: string) => {
-    try {
-        let product = await redis.get(id);
+    let product = await redis.get(id);
+    if (product) {
+        return JSON.parse(product);
+    } else {
+        product = await productModel.findOne({ _id: id });
         if (product) {
-            return JSON.parse(product);
-        } else {
-            product = await productModel.findOne({ _id: id });
-            if (product) {
-                await redis.set(id, JSON.stringify(product), 'EX', 3600); // cache for 1 hour
-            }
-            return product;
+            await redis.set(id, JSON.stringify(product), 'EX', 3600); // cache for 1 hour
         }
-    } catch (err) {
-        console.error(err);
-        throw err;
+        return product;
+        }
     }
-};
 
 
 export const updateOneProduct = (id: string, params: Product) => {
